@@ -21,6 +21,13 @@ ENV UPDATE_CHECK=1800
 ENV USER=linuxgsm
 ENV UID=1000
 ENV GID=1000
+ENV SERVER_IP=${SERVER_IP:-"0.0.0.0"}
+ENV SERVER_PORT=${SERVER_PORT:-"27015"}
+ENV SERVER_HOSTNAME=${HOSTNAME:-"LinuxGSM"}
+ENV SERVER_PASSWORD=${SERVER_PASSWORD:-""}
+ENV RCON_PASSWORD=${RCON_PASSWORD:-"changeme"}
+ENV MAX_PLAYERS=${MAX_PLAYERS:-"16"}
+ENV DEFAULT_MAP=${DEFAULT_MAP:-"dod_donner"}
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -148,6 +155,20 @@ RUN depshortname=$(curl --connect-timeout 10 -s https://raw.githubusercontent.co
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*; \
   fi
+
+RUN echo "**** Install i386 Game Depedencies *****" \
+    && dpkg --add-architecture i386 \
+    && apt-get update \
+    && apt-get install -y \
+    libc6:i386 \
+    libncurses5:i386 \
+    libstdc++6:i386 \
+    libtinfo5:i386 \
+    && apt-get -y autoremove \
+    && apt-get -y clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/* \
+    && rm -rf /var/tmp/*
 
 HEALTHCHECK --interval=1m --timeout=1m --start-period=2m --retries=1 CMD /app/entrypoint-healthcheck.sh || exit 1
 

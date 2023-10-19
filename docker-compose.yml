@@ -9,6 +9,7 @@ services:
     container_name: dods-server
     volumes:
       - .server:/data
+      - ./cfg:/app/cfg
     ports:
       - "27015:27015/tcp"
       - "27015:27015/udp"

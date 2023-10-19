@@ -43,6 +43,22 @@ else
   ./"${GAMESERVER}" sponsor
 fi
 
+# Start update checks
+echo -e ""
+echo -e "Starting Update Checks"
+echo -e "================================="
+nohup watch -n "${UPDATE_CHECK}" ./"${GAMESERVER}" update > /dev/null 2>&1 &
+minutes=$((UPDATE_CHECK / 60))
+echo -e "update will check every ${minutes} minutes"
+
+# Update game server
+if [ -z "${install}" ]; then
+  echo -e ""
+  echo -e "Checking for Update ${GAMESERVER}"
+  echo -e "================================="
+  ./"${GAMESERVER}" update
+fi
+
 # Install Mods
 if [ -z "$(ls -A -- "/data/serverfiles/${FOLDERNAME}/addons" 2> /dev/null)" ]; then
   echo -e ""
@@ -60,20 +76,24 @@ if [ -z "$(ls -A -- "/data/serverfiles/${FOLDERNAME}/addons" 2> /dev/null)" ]; t
   fi
 fi
 
-# Start update checks
-echo -e ""
-echo -e "Starting Update Checks"
-echo -e "================================="
-nohup watch -n "${UPDATE_CHECK}" ./"${GAMESERVER}" update > /dev/null 2>&1 &
-minutes=$((UPDATE_CHECK / 60))
-echo -e "update will check every ${minutes} minutes"
+# Run skeleton command
+#if [ -z "$(ls -A -- "/app/skel" 2> /dev/null)" ]; then
+#  echo -e ""
+#  echo -e "Running Skeleton Command"
+#  echo -e "================================="
+#  ./"${GAMESERVER}" sk
+#fi
 
-# Update game server
+# Debug mode
+install=1
+
+# Copy server cfg file
 if [ -z "${install}" ]; then
   echo -e ""
-  echo -e "Checking for Update ${GAMESERVER}"
+  echo -e "Copying server configs"
   echo -e "================================="
-  ./"${GAMESERVER}" update
+  cp /app/cfg/startparameters.cfg "/data/config-lgsm/${GAMESERVER}"
+  cp /app/cfg/dodsserver.cfg "/data/serverfiles/${GAMESERVER}/cfg"
 fi
 
 # Start game server
