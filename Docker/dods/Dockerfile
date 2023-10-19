@@ -131,7 +131,7 @@ RUN echo "$CACHEBUST"
 COPY entrypoint.sh /app/entrypoint.sh
 COPY entrypoint-user.sh /app/entrypoint-user.sh
 COPY entrypoint-healthcheck.sh /app/entrypoint-healthcheck.sh
-COPY mods-expect.sh /app/mods-expect.sh
+COPY mods.expect /app/mods-expect.sh
 COPY install-mods.txt /app/install-mods.txt
 
 ARG SHORTNAME=dods
