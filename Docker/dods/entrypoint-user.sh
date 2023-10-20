@@ -76,6 +76,17 @@ if [ -z "$(ls -A -- "/data/serverfiles/${FOLDERNAME}/addons" 2> /dev/null)" ]; t
   fi
 fi
 
+# Install RCBot2
+if [ -z "$(ls -A -- "/data/serverfiles/${FOLDERNAME}/addons/rcbot2" 2> /dev/null)" ]; then
+  echo -e ""
+  echo -e "Installing RCBot2"
+  echo -e "================================="
+  wget $(curl -s https://api.github.com/repos/APGRoboCop/rcbot2/releases/latest | grep "browser_download_url" | cut -d '"' -f 4) &&
+  unzip rcbot2.zip -d "/data/serverfiles/${FOLDERNAME}/addons" &&
+  rm rcbot2.zip
+fi
+
+
 # Run skeleton command
 #if [ -z "$(ls -A -- "/app/skel" 2> /dev/null)" ]; then
 #  echo -e ""
@@ -88,13 +99,14 @@ fi
 install=1
 
 # Copy server cfg file
-if [ -z "${install}" ]; then
+#if [ -z "${install}" ]; then
   echo -e ""
   echo -e "Copying server configs"
   echo -e "================================="
-  cp /app/cfg/startparameters.cfg "/data/config-lgsm/${GAMESERVER}"
-  cp /app/cfg/dodsserver.cfg "/data/serverfiles/${GAMESERVER}/cfg"
-fi
+  cp /app/cfg/startparameters.cfg "/data/config-lgsm/${GAMESERVER}/${GAMESERVER}.cfg"
+  cp /app/cfg/dodsserver.cfg "/data/serverfiles/${FOLDERNAME}/cfg/${GAMESERVER}.cfg"
+  echo "Server configs files copied."
+#fi
 
 # Start game server
 echo -e ""
