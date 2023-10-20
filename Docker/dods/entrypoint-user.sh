@@ -15,7 +15,7 @@ trap exit_handler_user SIGQUIT SIGINT SIGTERM
 # Setup game server
 if [ ! -f "${GAMESERVER}" ]; then
   echo -e ""
-  echo -e "creating ${GAMESERVER}"
+  echo -e "Creating ${GAMESERVER}"
   echo -e "================================="
   ./linuxgsm.sh "${GAMESERVER}"
 fi
@@ -86,27 +86,29 @@ if [ -z "$(ls -A -- "/data/serverfiles/${FOLDERNAME}/addons/rcbot2" 2> /dev/null
   rm rcbot2.zip
 fi
 
-
-# Run skeleton command
-#if [ -z "$(ls -A -- "/app/skel" 2> /dev/null)" ]; then
-#  echo -e ""
-#  echo -e "Running Skeleton Command"
-#  echo -e "================================="
-#  ./"${GAMESERVER}" sk
-#fi
-
 # Debug mode
 install=1
 
 # Copy server cfg file
 #if [ -z "${install}" ]; then
+#  echo -e ""
+#  echo -e "Copying server configs"
+#  echo -e "================================="
+#  cp /app/cfg/startparameters.cfg "/data/config-lgsm/${GAMESERVER}/${GAMESERVER}.cfg"
+#  cp /app/cfg/dodsserver.cfg "/data/serverfiles/${FOLDERNAME}/cfg/${GAMESERVER}.cfg"
+#  echo "Server configs files copied."
+#fi
+
+# Download remote cfg files
+if [ -z "${install}" ]; then
   echo -e ""
-  echo -e "Copying server configs"
+  echo -e "Downloading remote cfg files"
   echo -e "================================="
+  git clone https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${GITHUB_USERNAME}>/${GITHUB_REPO}.git cfg
   cp /app/cfg/startparameters.cfg "/data/config-lgsm/${GAMESERVER}/${GAMESERVER}.cfg"
   cp /app/cfg/dodsserver.cfg "/data/serverfiles/${FOLDERNAME}/cfg/${GAMESERVER}.cfg"
-  echo "Server configs files copied."
-#fi
+  echo "Remote cfg files downloaded."
+fi
 
 # Start game server
 echo -e ""

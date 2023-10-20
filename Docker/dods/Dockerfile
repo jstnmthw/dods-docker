@@ -29,10 +29,15 @@ ENV DEFAULT_MAP=${DEFAULT_MAP}
 ENV MAX_PLAYEERS=${MAX_PLAYERS}
 ENV RESERVRED_SLOTS=${RESERVED_SLOTS}
 
+ENV GITHUB_USERNAME=${GITHUB_USERNAME}
+ENV GITHUB_TOKEN=${GITHUB_TOKEN}
+ENV GITHUB_REPO=${GITHUB_REPO}
+ENV GITHUB_BRANCH=${GITHUB_BRANCH:-"main"}
+
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ## Install Base LinuxGSM Requirements
-RUN echo "**** Install Base LinuxGSM Requirements ****" \
+RUN dpkg --add-architecture i386 \
   && apt-get update \
   && apt-get install -y software-properties-common \
   && add-apt-repository multiverse \
@@ -67,12 +72,15 @@ RUN echo "**** Install Base LinuxGSM Requirements ****" \
   uuid-runtime \
   wget \
   xz-utils \
-  # Docker Extras
   iproute2 \
   iputils-ping \
   nano \
   vim \
   expect \
+  libc6:i386 \
+  libncurses5:i386 \
+  libstdc++6:i386 \
+  libtinfo5:i386 \
   && apt-get -y autoremove \
   && apt-get -y clean \
   && rm -rf /var/lib/apt/lists/* \
@@ -80,8 +88,7 @@ RUN echo "**** Install Base LinuxGSM Requirements ****" \
   && rm -rf /var/tmp/*
 
 # Install Node.js
-RUN echo "**** Install Node.js ****" \
-  && set -uex \
+RUN set -uex \
   && mkdir -p /etc/apt/keyrings \
   && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
   && NODE_MAJOR=20 \
@@ -94,29 +101,13 @@ RUN echo "**** Install Node.js ****" \
   && rm -rf /tmp/* \
   && rm -rf /var/tmp/*
 
-RUN echo "**** Install i386 Game Depedencies *****" \
-    && dpkg --add-architecture i386 \
-    && apt-get update \
-    && apt-get install -y \
-    libc6:i386 \
-    libncurses5:i386 \
-    libstdc++6:i386 \
-    libtinfo5:i386 \
-    && apt-get -y autoremove \
-    && apt-get -y clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /tmp/* \
-    && rm -rf /var/tmp/*
-
 # Install GameDig https://docs.linuxgsm.com/requirements/gamedig
-RUN echo "**** Install GameDig ****" \
-  && npm install -g gamedig
+RUN npm install -g gamedig
 
 WORKDIR /app
 
 ## Add linuxgsm user
-RUN echo "**** Add linuxgsm user ****" \
-  && mkdir /data \
+RUN mkdir /data \
   # Create the user
   && groupadd --gid $GID $USER \
   && useradd --uid $UID --gid $GID -m $USER \
@@ -128,13 +119,11 @@ RUN echo "**** Add linuxgsm user ****" \
   && chown $USER:$USER /app
 
 ## Download linuxgsm.sh
-RUN echo "**** Download linuxgsm.sh ****" \
-  && set -ex \
+RUN set -ex \
   && curl -Lo linuxgsm.sh "https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/${LGSM_GITHUBBRANCH}/linuxgsm.sh" \
   && chmod +x linuxgsm.sh
 
-RUN echo "**** Get LinuxGSM Modules ****" \
-  && git clone --filter=blob:none --no-checkout --sparse https://github.com/GameServerManagers/LinuxGSM.git \
+RUN git clone --filter=blob:none --no-checkout --sparse https://github.com/GameServerManagers/LinuxGSM.git \
   && cd LinuxGSM \
   && git sparse-checkout set --cone \
   && git sparse-checkout set lgsm/modules \
