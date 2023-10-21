@@ -100,17 +100,43 @@ if [ -z "${install}" ]; then
   unzip -o ${CONFIG_GITHUB_BRANCH}.zip -d /app/cfg
   rm ${CONFIG_GITHUB_BRANCH}.zip
 
-  parent_dir=$(find "/app/cfg" -type d -mindepth 1 -maxdepth 1)
+  parent_dir=$(find "/app/cfg" -type d -mindepth 1 -maxdepth 1 -name "${CONFIG_GITHUB_USERNAME}*")
   mv "$parent_dir"/* "/app/cfg"
   rm -rf "$parent_dir"
 
-  cp /app/cfg/startparameters.cfg "/data/config-lgsm/${GAMESERVER}/${GAMESERVER}.cfg"
-  cp /app/cfg/dodsserver.cfg "/data/serverfiles/${FOLDERNAME}/cfg/${GAMESERVER}.cfg"
-  cp /app/cfg/mapcycle.txt "/data/serverfiles/${FOLDERNAME}/cfg/mapcycle.txt"
-  cp /app/cfg/rcbot2.cfg "/data/serverfiles/${FOLDERNAME}/addons/rcbot2/rcbot2.cfg"
-  cp -r /app/cfg/profiles/* "/data/serverfiles/${FOLDERNAME}/addons/rcbot2/profiles/"
-
-  echo "Remote cfg files downloaded."
+  # Dynamically copy files to their correct locations
+  for file in "/app/cfg"/*; do
+    filename=$(basename "$file")
+      case "$filename" in
+        "server.cfg")
+          echo -e "Copying ${filename} to /data/config-lgsm/${GAMESERVER}/${GAMESERVER}.cfg"
+          cp "$file" "/data/config-lgsm/${GAMESERVER}/${GAMESERVER}.cfg"
+        ;;
+        "game.cfg")
+          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/cfg/${GAMESERVER}.cfg"
+          cp "$file" "/data/serverfiles/${FOLDERNAME}/cfg/${GAMESERVER}.cfg"
+        ;;
+        "mapcycle.txt")
+          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/cfg/mapcycle.txt"
+          cp "$file" "/data/serverfiles/${FOLDERNAME}/cfg/mapcycle.txt"
+        ;;
+        "rcbot2.cfg")
+          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/rcbot2/rcbot2.cfg"
+          cp "$file" "/data/serverfiles/${FOLDERNAME}/addons/rcbot2/rcbot2.cfg"
+        ;;
+        "admins.ini")
+          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/sourcemod/configs/admins_simple.ini"
+          cp "$file" "/data/serverfiles/${FOLDERNAME}/addons/sourcemod/configs/admins_simple.ini"
+        ;;
+        *)
+          if [ -d "$file" ] && [ "$filename" = "profiles" ]; then
+            echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/rcbot2/profiles/"
+            cp -r "$file" "/data/serverfiles/${FOLDERNAME}/addons/rcbot2/profiles/"
+          fi
+          ;;
+      esac
+  done
+  echo "Remote cfg files downloaded and copied to the correct location."
 fi
 
 # Start game server
