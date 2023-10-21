@@ -87,7 +87,7 @@ if [ -z "$(ls -A -- "/data/serverfiles/${FOLDERNAME}/addons/rcbot2" 2> /dev/null
 fi
 
 # Download remote cfg files
-#if [ -z "${install}" ]; then
+if [ -z "${install}" ]; then
   echo -e ""
   echo -e "Downloading remote cfg files"
   echo -e "================================="
@@ -100,13 +100,18 @@ fi
   unzip -o ${CONFIG_GITHUB_BRANCH}.zip -d /app/cfg
   rm ${CONFIG_GITHUB_BRANCH}.zip
 
+  parent_dir=$(find "/app/cfg" -type d -mindepth 1 -maxdepth 1)
+  mv "$parent_dir"/* "/app/cfg"
+  rm -rf "$parent_dir"
+
   cp /app/cfg/startparameters.cfg "/data/config-lgsm/${GAMESERVER}/${GAMESERVER}.cfg"
   cp /app/cfg/dodsserver.cfg "/data/serverfiles/${FOLDERNAME}/cfg/${GAMESERVER}.cfg"
   cp /app/cfg/mapcycle.txt "/data/serverfiles/${FOLDERNAME}/cfg/mapcycle.txt"
   cp /app/cfg/rcbot2.cfg "/data/serverfiles/${FOLDERNAME}/addons/rcbot2/rcbot2.cfg"
+  cp -r /app/cfg/profiles/* "/data/serverfiles/${FOLDERNAME}/addons/rcbot2/profiles/"
 
   echo "Remote cfg files downloaded."
-#fi
+fi
 
 # Start game server
 echo -e ""
