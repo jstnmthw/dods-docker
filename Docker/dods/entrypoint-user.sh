@@ -40,7 +40,7 @@ if [ -z "$(ls -A -- "/data/serverfiles" 2> /dev/null)" ]; then
 else
   echo -e ""
   # Sponsor to display LinuxGSM logo
-  ./"${GAMESERVER}" sponsor
+  #./"${GAMESERVER}" sponsor
 fi
 
 # Start update checks
@@ -82,33 +82,31 @@ if [ -z "$(ls -A -- "/data/serverfiles/${FOLDERNAME}/addons/rcbot2" 2> /dev/null
   echo -e "Installing RCBot2"
   echo -e "================================="
   wget $(curl -s https://api.github.com/repos/APGRoboCop/rcbot2/releases/latest | grep "browser_download_url" | cut -d '"' -f 4) &&
-  unzip rcbot2.zip -d "/data/serverfiles/${FOLDERNAME}/addons" &&
+  unzip rcbot2.zip -d "/data/serverfiles/${FOLDERNAME}" &&
   rm rcbot2.zip
 fi
 
-# Debug mode
-install=1
-
-# Copy server cfg file
-#if [ -z "${install}" ]; then
-#  echo -e ""
-#  echo -e "Copying server configs"
-#  echo -e "================================="
-#  cp /app/cfg/startparameters.cfg "/data/config-lgsm/${GAMESERVER}/${GAMESERVER}.cfg"
-#  cp /app/cfg/dodsserver.cfg "/data/serverfiles/${FOLDERNAME}/cfg/${GAMESERVER}.cfg"
-#  echo "Server configs files copied."
-#fi
-
 # Download remote cfg files
-if [ -z "${install}" ]; then
+#if [ -z "${install}" ]; then
   echo -e ""
   echo -e "Downloading remote cfg files"
   echo -e "================================="
-  git clone https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${GITHUB_USERNAME}>/${GITHUB_REPO}.git cfg
+  curl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer ${CONFIG_GITHUB_TOKEN}" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/${CONFIG_GITHUB_USERNAME}/${CONFIG_GITHUB_REPO}/zipball/${CONFIG_GITHUB_BRANCH} > ${CONFIG_GITHUB_BRANCH}.zip
+
+  unzip -o ${CONFIG_GITHUB_BRANCH}.zip -d /app/cfg
+  rm ${CONFIG_GITHUB_BRANCH}.zip
+
   cp /app/cfg/startparameters.cfg "/data/config-lgsm/${GAMESERVER}/${GAMESERVER}.cfg"
   cp /app/cfg/dodsserver.cfg "/data/serverfiles/${FOLDERNAME}/cfg/${GAMESERVER}.cfg"
+  cp /app/cfg/mapcycle.txt "/data/serverfiles/${FOLDERNAME}/cfg/mapcycle.txt"
+  cp /app/cfg/rcbot2.cfg "/data/serverfiles/${FOLDERNAME}/addons/rcbot2/rcbot2.cfg"
+
   echo "Remote cfg files downloaded."
-fi
+#fi
 
 # Start game server
 echo -e ""

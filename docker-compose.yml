@@ -7,6 +7,11 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     container_name: dods-server
+    environment:
+      - CONFIG_GITHUB_USERNAME=${CONFIG_GITHUB_USERNAME}
+      - CONFIG_GITHUB_TOKEN=${CONFIG_GITHUB_TOKEN}
+      - CONFIG_GITHUB_REPO=${CONFIG_GITHUB_REPO}
+      - CONFIG_GITHUB_BRANCH=${CONFIG_GITHUB_BRANCH}
     volumes:
       - .server:/data
       - ./cfg:/app/cfg
