@@ -87,7 +87,7 @@ if [ -z "$(ls -A -- "/data/serverfiles/${FOLDERNAME}/addons/rcbot2" 2> /dev/null
 fi
 
 # Download remote cfg files
-if [ "${install}" == 0 ]; then
+if [ "${install}" == 1 ]; then
   echo -e ""
   echo -e "Downloading remote cfg files"
   echo -e "================================="
