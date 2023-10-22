@@ -17,6 +17,7 @@ echo -e ""
   # Dynamically copy files to their correct locations
   for file in "/app/cfg"/*; do
     filename=$(basename "$file")
+      echo "============== ${filename} ==============";
       case "$filename" in
         "server.cfg")
           echo -e "Copying ${filename} to /data/config-lgsm/${GAMESERVER}/${GAMESERVER}.cfg"
@@ -40,14 +41,23 @@ echo -e ""
         ;;
         *)
         if [ -d "$file" ] && [ "$filename" = "profiles" ]; then
-          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/rcbot2/profiles/"
-          cp -r "$file" "/data/serverfiles/${FOLDERNAME}/addons/rcbot2/profiles/"
+          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/rcbot2/profiles"
+          cp -r "$file" "/data/serverfiles/${FOLDERNAME}/addons/rcbot2/profiles"
         fi
         if [ -d "$file" ] && [ "$filename" = "plugins" ]; then
-          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/sourcemod/plugins/"
-          cp -r "$file" "/data/serverfiles/${FOLDERNAME}/addons/sourcemod/plugins/"
+          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/sourcemod/plugins"
+          cp -r "$file" "/data/serverfiles/${FOLDERNAME}/addons/sourcemod/plugins"
+        fi
+        if [ -d "$file" ] && [ "$filename" = "materials" ]; then
+          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/materials"
+          cp -r "$file" "/data/serverfiles/${FOLDERNAME}"
+        fi
+        if [ -d "$file" ] && [ "$filename" = "maps" ]; then
+          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/maps"
+          cp -r "$file" "/data/serverfiles/${FOLDERNAME}/maps"
         fi
         ;;
       esac
   done
-  echo "Remote cfg files downloaded and copied to the correct location."
+  echo -e ""
+  echo "Remote cfg files downloaded and copied to the correct location... OK"
