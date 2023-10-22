@@ -86,6 +86,16 @@ if [ -z "$(ls -A -- "/data/serverfiles/${FOLDERNAME}/addons/rcbot2" 2> /dev/null
   rm rcbot2.zip
 fi
 
+# Install gameMe
+if [ -z "$(ls -A -- "/data/serverfiles/${FOLDERNAME}/addons/sourcemod/gameme.smx" 2> /dev/null)" ]; then
+  echo -e ""
+  echo -e "Installing gameMe"
+  echo -e "================================="
+  wget https://www.gameme.com/downloads/gameme_plugin_sourcemod_v4.8.zip --no-check-certificate &&
+  unzip gameme_plugin_sourcemod_v4.8.zip -d "/data/serverfiles/${FOLDERNAME}/addons/sourcemod" &&
+  rm gameme_plugin_sourcemod_v4.8.zip
+fi
+
 # Download remote cfg files
 if [ "${install}" == 1 ]; then
   ./install-config.sh
