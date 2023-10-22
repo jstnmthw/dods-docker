@@ -42,11 +42,11 @@ echo -e ""
         *)
         if [ -d "$file" ] && [ "$filename" = "profiles" ]; then
           echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/rcbot2/profiles"
-          cp -r "$file" "/data/serverfiles/${FOLDERNAME}/addons/rcbot2/profiles"
+          cp -r "$file" "/data/serverfiles/${FOLDERNAME}/addons/rcbot2"
         fi
         if [ -d "$file" ] && [ "$filename" = "plugins" ]; then
           echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/sourcemod/plugins"
-          cp -r "$file" "/data/serverfiles/${FOLDERNAME}/addons/sourcemod/plugins"
+          cp -r "$file" "/data/serverfiles/${FOLDERNAME}/addons/sourcemod"
         fi
         if [ -d "$file" ] && [ "$filename" = "materials" ]; then
           echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/materials"
@@ -54,7 +54,7 @@ echo -e ""
         fi
         if [ -d "$file" ] && [ "$filename" = "maps" ]; then
           echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/maps"
-          cp -r "$file" "/data/serverfiles/${FOLDERNAME}/maps"
+          cp -r "$file" "/data/serverfiles/${FOLDERNAME}"
         fi
         ;;
       esac
