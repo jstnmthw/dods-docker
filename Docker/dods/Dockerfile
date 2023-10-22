@@ -134,6 +134,7 @@ COPY entrypoint-user.sh /app/entrypoint-user.sh
 COPY entrypoint-healthcheck.sh /app/entrypoint-healthcheck.sh
 COPY mods.expect /app/mods-expect.sh
 COPY install-mods.txt /app/install-mods.txt
+COPY install-config.sh /app/install-config.sh
 
 ARG SHORTNAME=dods
 ENV GAMESERVER=dodsserver
