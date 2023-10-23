@@ -37,9 +37,9 @@ echo -e ""
           echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/cfg/mapcycle.txt"
           cp "$file" "/data/serverfiles/${FOLDERNAME}/cfg/mapcycle.txt"
         ;;
-        "rcbot2.cfg")
-          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/rcbot2/rcbot2.cfg"
-          cp "$file" "/data/serverfiles/${FOLDERNAME}/addons/rcbot2/rcbot2.cfg"
+        "rcbot2.ini")
+          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/rcbot2/config.ini"
+          cp "$file" "/data/serverfiles/${FOLDERNAME}/addons/rcbot2/config/config.ini"
         ;;
         "admins.ini")
           echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/sourcemod/configs/admins_simple.ini"
