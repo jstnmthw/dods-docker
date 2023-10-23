@@ -7,6 +7,8 @@ echo -e ""
   -H "X-GitHub-Api-Version: 2022-11-28" \
   https://api.github.com/repos/${CONFIG_GITHUB_USERNAME}/${CONFIG_GITHUB_REPO}/zipball/${CONFIG_GITHUB_BRANCH} > ${CONFIG_GITHUB_BRANCH}.zip
 
+  echo "============== Removing and unzipping files =============="
+  rm -rf /app/cfg/*
   unzip -o ${CONFIG_GITHUB_BRANCH}.zip -d /app/cfg
   rm ${CONFIG_GITHUB_BRANCH}.zip
 
@@ -19,6 +21,10 @@ echo -e ""
     filename=$(basename "$file")
       echo "============== ${filename} ==============";
       case "$filename" in
+        "autoexec.cfg")
+          echo -e "Copying ${filename} to /data/serverfiles/${GAMESERVER}/autoexec.cfg"
+          cp "$file" "/data/serverfiles/${FOLDERNAME}/cfg/autoexec.cfg"
+        ;;
         "server.cfg")
           echo -e "Copying ${filename} to /data/config-lgsm/${GAMESERVER}/${GAMESERVER}.cfg"
           cp "$file" "/data/config-lgsm/${GAMESERVER}/${GAMESERVER}.cfg"
@@ -54,6 +60,18 @@ echo -e ""
         fi
         if [ -d "$file" ] && [ "$filename" = "maps" ]; then
           echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/maps"
+          cp -r "$file" "/data/serverfiles/${FOLDERNAME}"
+        fi
+        if [ -d "$file" ] && [ "$filename" = "scripting" ]; then
+          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/scripting"
+          cp -r "$file" "/data/serverfiles/${FOLDERNAME}"
+        fi
+        if [ -d "$file" ] && [ "$filename" = "translations" ]; then
+          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/translations"
+          cp -r "$file" "/data/serverfiles/${FOLDERNAME}"
+        fi
+        if [ -d "$file" ] && [ "$filename" = "configs" ]; then
+          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/configs"
           cp -r "$file" "/data/serverfiles/${FOLDERNAME}"
         fi
         ;;
