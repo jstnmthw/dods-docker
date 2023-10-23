@@ -45,6 +45,10 @@ echo -e ""
           echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/sourcemod/configs/admins_simple.ini"
           cp "$file" "/data/serverfiles/${FOLDERNAME}/addons/sourcemod/configs/admins_simple.ini"
         ;;
+        "sourcemod.cfg")
+          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/sourcemod/configs/sourcemod.cfg"
+          cp "$file" "/data/serverfiles/${FOLDERNAME}/addons/sourcemod/configs/sourcemod.cfg"
+        ;;
         *)
         if [ -d "$file" ] && [ "$filename" = "profiles" ]; then
           echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/rcbot2/profiles"
