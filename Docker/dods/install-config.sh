@@ -63,16 +63,16 @@ echo -e ""
           cp -r "$file" "/data/serverfiles/${FOLDERNAME}"
         fi
         if [ -d "$file" ] && [ "$filename" = "scripting" ]; then
-          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/scripting"
-          cp -r "$file" "/data/serverfiles/${FOLDERNAME}"
+          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/sourcemod/scripting"
+          cp -r "$file" "/data/serverfiles/${FOLDERNAME}/addons/sourcemod"
         fi
         if [ -d "$file" ] && [ "$filename" = "translations" ]; then
-          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/translations"
-          cp -r "$file" "/data/serverfiles/${FOLDERNAME}"
+          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/sourcemod/translations"
+          cp -r "$file" "/data/serverfiles/${FOLDERNAME}/addons/sourcemod"
         fi
         if [ -d "$file" ] && [ "$filename" = "configs" ]; then
-          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/configs"
-          cp -r "$file" "/data/serverfiles/${FOLDERNAME}"
+          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/sourcemod/configs"
+          cp -r "$file" "/data/serverfiles/${FOLDERNAME}/addons/sourcemod"
         fi
         ;;
       esac
