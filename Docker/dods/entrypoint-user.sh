@@ -40,7 +40,7 @@ if [ -z "$(ls -A -- "/data/serverfiles" 2> /dev/null)" ]; then
 else
   echo -e ""
   # Sponsor to display LinuxGSM logo
-  #./"${GAMESERVER}" sponsor
+  ./"${GAMESERVER}" sponsor
 fi
 
 # Start update checks
