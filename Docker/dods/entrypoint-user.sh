@@ -87,7 +87,7 @@ if [ -z "$(ls -A -- "/data/serverfiles/${FOLDERNAME}/addons/rcbot2" 2> /dev/null
 fi
 
 # Install gameMe
-if [ -z "$(ls -A -- "/data/serverfiles/${FOLDERNAME}/addons/sourcemod/gameme.smx" 2> /dev/null)" ]; then
+if [ ! -e "/data/serverfiles/${FOLDERNAME}/addons/sourcemod/gameme.smx" ]; then
   echo -e ""
   echo -e "Installing gameMe"
   echo -e "================================="
