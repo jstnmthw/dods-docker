@@ -1,85 +1,23 @@
+# Download remote git repo config files
 echo -e ""
-  echo -e "Downloading remote cfg files"
-  echo -e "================================="
-  curl -L \
-  -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer ${CONFIG_GITHUB_TOKEN}" \
-  -H "X-GitHub-Api-Version: 2022-11-28" \
-  https://api.github.com/repos/${CONFIG_GITHUB_USERNAME}/${CONFIG_GITHUB_REPO}/zipball/${CONFIG_GITHUB_BRANCH} > ${CONFIG_GITHUB_BRANCH}.zip
+echo -e "Downloading remote cfg files"
+echo -e "================================="
+curl -L \
+-H "Accept: application/vnd.github+json" \
+-H "Authorization: Bearer ${CONFIG_GITHUB_TOKEN}" \
+-H "X-GitHub-Api-Version: 2022-11-28" \
+https://api.github.com/repos/${CONFIG_GITHUB_USERNAME}/${CONFIG_GITHUB_REPO}/zipball/${CONFIG_GITHUB_BRANCH} > ${CONFIG_GITHUB_BRANCH}.zip
 
-  echo "============== Removing and unzipping files =============="
-  rm -rf /app/cfg/*
-  unzip -o ${CONFIG_GITHUB_BRANCH}.zip -d /app/cfg
-  rm ${CONFIG_GITHUB_BRANCH}.zip
+# Unzip and remove the zip file
+rm -rf /app/cfg/*
+unzip -o "${CONFIG_GITHUB_BRANCH}.zip" -d /app/cfg
+rm "${CONFIG_GITHUB_BRANCH}.zip"
 
-  parent_dir=$(find "/app/cfg" -mindepth 1 -maxdepth 1 -type d -name "${CONFIG_GITHUB_USERNAME}*")
-  mv "$parent_dir"/* "/app/cfg"
-  rm -rf "$parent_dir"
+# Find the parent directory of the Git repo contents
+parent_dir=$(find "/app/cfg" -mindepth 1 -maxdepth 1 -type d -name "${CONFIG_GITHUB_USERNAME}*")
 
-  # Dynamically copy files to their correct locations
-  for file in "/app/cfg"/*; do
-    filename=$(basename "$file")
-      echo "============== ${filename} ==============";
-      case "$filename" in
-        "autoexec.cfg")
-          echo -e "Copying ${filename} to /data/serverfiles/${GAMESERVER}/autoexec.cfg"
-          cp "$file" "/data/serverfiles/${FOLDERNAME}/cfg/autoexec.cfg"
-        ;;
-        "server.cfg")
-          echo -e "Copying ${filename} to /data/config-lgsm/${GAMESERVER}/${GAMESERVER}.cfg"
-          cp "$file" "/data/config-lgsm/${GAMESERVER}/${GAMESERVER}.cfg"
-        ;;
-        "game.cfg")
-          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/cfg/${GAMESERVER}.cfg"
-          cp "$file" "/data/serverfiles/${FOLDERNAME}/cfg/${GAMESERVER}.cfg"
-        ;;
-        "mapcycle.txt")
-          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/cfg/mapcycle.txt"
-          cp "$file" "/data/serverfiles/${FOLDERNAME}/cfg/mapcycle.txt"
-        ;;
-        "rcbot2.ini")
-          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/rcbot2/config.ini"
-          cp "$file" "/data/serverfiles/${FOLDERNAME}/addons/rcbot2/config/config.ini"
-        ;;
-        "admins.ini")
-          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/sourcemod/configs/admins_simple.ini"
-          cp "$file" "/data/serverfiles/${FOLDERNAME}/addons/sourcemod/configs/admins_simple.ini"
-        ;;
-        "sourcemod.cfg")
-          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/sourcemod/configs/sourcemod.cfg"
-          cp "$file" "/data/serverfiles/${FOLDERNAME}/addons/sourcemod/configs/sourcemod.cfg"
-        ;;
-        *)
-        if [ -d "$file" ] && [ "$filename" = "profiles" ]; then
-          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/rcbot2/profiles"
-          cp -r "$file" "/data/serverfiles/${FOLDERNAME}/addons/rcbot2"
-        fi
-        if [ -d "$file" ] && [ "$filename" = "plugins" ]; then
-          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/sourcemod/plugins"
-          cp -r "$file" "/data/serverfiles/${FOLDERNAME}/addons/sourcemod"
-        fi
-        if [ -d "$file" ] && [ "$filename" = "materials" ]; then
-          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/materials"
-          cp -r "$file" "/data/serverfiles/${FOLDERNAME}"
-        fi
-        if [ -d "$file" ] && [ "$filename" = "maps" ]; then
-          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/maps"
-          cp -r "$file" "/data/serverfiles/${FOLDERNAME}"
-        fi
-        if [ -d "$file" ] && [ "$filename" = "scripting" ]; then
-          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/sourcemod/scripting"
-          cp -r "$file" "/data/serverfiles/${FOLDERNAME}/addons/sourcemod"
-        fi
-        if [ -d "$file" ] && [ "$filename" = "translations" ]; then
-          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/sourcemod/translations"
-          cp -r "$file" "/data/serverfiles/${FOLDERNAME}/addons/sourcemod"
-        fi
-        if [ -d "$file" ] && [ "$filename" = "configs" ]; then
-          echo -e "Copying ${filename} to /data/serverfiles/${FOLDERNAME}/addons/sourcemod/configs"
-          cp -r "$file" "/data/serverfiles/${FOLDERNAME}/addons/sourcemod"
-        fi
-        ;;
-      esac
-  done
-  echo -e ""
-  echo "Remote cfg files downloaded and copied to the correct location... OK"
+# Use rsync to update the /data directory without deleting existing files
+rsync -av "$parent_dir"/ /data/
+
+echo -e ""
+echo "Remote cfg files downloaded and copied to the correct location... OK"

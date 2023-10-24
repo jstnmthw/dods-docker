@@ -3,7 +3,6 @@
 #
 # https://github.com/GameServerManagers/docker-linuxgsm
 #
-
 FROM gameservermanagers/steamcmd:ubuntu-22.04
 
 LABEL maintainer="LinuxGSM <me@danielgibbs.co.uk>"
@@ -72,6 +71,7 @@ RUN dpkg --add-architecture i386 \
   libncurses5:i386 \
   libstdc++6:i386 \
   libtinfo5:i386 \
+  rsync \
   && apt-get -y autoremove \
   && apt-get -y clean \
   && rm -rf /var/lib/apt/lists/* \
