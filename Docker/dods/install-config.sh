@@ -19,5 +19,8 @@ parent_dir=$(find "/app/cfg" -mindepth 1 -maxdepth 1 -type d -name "${CONFIG_GIT
 # Use rsync to update the /data directory without deleting existing files
 rsync -av "$parent_dir"/ /data/
 
+# Remove the parent directory of the Git repo contents
+rm -rf "$parent_dir"
+
 echo -e ""
 echo "Remote cfg files downloaded and copied to the correct location... OK"
