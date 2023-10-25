@@ -2,10 +2,8 @@ version: '3.8'
 
 services:
   gameserver:
-    env_file:
-      - ./gameserver/.env
     build:
-      context: gameserver/Docker/dods
+      context: Docker/dods
       dockerfile: Dockerfile
     image: dods-server
     restart: unless-stopped
