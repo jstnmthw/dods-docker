@@ -2,4 +2,8 @@
 .idea
 .env
 cfg
-web/*
+
+# Laravel 10.x specific
+web/vendor
+web/node_modules
+web/.idea
