@@ -17,7 +17,11 @@ rm "${CONFIG_GITHUB_BRANCH}.zip"
 parent_dir=$(find "/app/cfg" -mindepth 1 -maxdepth 1 -type d -name "${CONFIG_GITHUB_USERNAME}*")
 
 # Use rsync to update the /data directory without deleting existing files
-rsync -av --exclude='.gitignore' "$parent_dir"/ /data/
+if [ -d "$parent_dir" ]; then
+  rsync -av --exclude='.gitignore' "$parent_dir"/ /data/
+else
+  echo "The parent directory of the Git repo contents could not be found."
+fi
 
 # Remove the parent directory of the Git repo contents
 rm -rf "$parent_dir"
