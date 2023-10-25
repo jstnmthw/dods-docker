@@ -1,22 +1,116 @@
-version: '3.4'
+version: '3.8'
 
 services:
-  dods-server:
+  gameserver:
+    env_file:
+      - ./gameserver/.env
     build:
-      context: Docker/dods
+      context: gameserver/Docker/dods
       dockerfile: Dockerfile
+    image: dods-server
     restart: unless-stopped
-    container_name: dods-server
+    container_name: gameserver
+    networks:
+      - default
     environment:
       - CONFIG_GITHUB_USERNAME=${CONFIG_GITHUB_USERNAME}
       - CONFIG_GITHUB_TOKEN=${CONFIG_GITHUB_TOKEN}
       - CONFIG_GITHUB_REPO=${CONFIG_GITHUB_REPO}
       - CONFIG_GITHUB_BRANCH=${CONFIG_GITHUB_BRANCH}
     volumes:
-      - .server:/data
-      - ./cfg:/app/cfg
+      - ./gameserver/.server:/data
+      - ./gameserver/cfg:/app/cfg
     ports:
       - "27015:27015/tcp"
       - "27015:27015/udp"
       - "27020:27020/udp"
       - "27005:27005/udp"
+  web:
+    env_file:
+      - ./web/.env
+    build:
+      context: ./web/vendor/laravel/sail/runtimes/8.2
+      dockerfile: Dockerfile
+      args:
+        WWWGROUP: '${WWWGROUP}'
+    image: sail-8.2/app
+    restart: unless-stopped
+    container_name: web
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    ports:
+      - '${APP_PORT:-80}:80'
+      - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+    environment:
+      WWWUSER: '${WWWUSER}'
+      WWWGROUP: '${WWWGROUP}'
+      LARAVEL_SAIL: 1
+      XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+      XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+      IGNITION_LOCAL_SITES_PATH: '${PWD}'
+    volumes:
+      - './web:/var/www/html'
+    networks:
+      - default
+    depends_on:
+      - database
+      - redis
+  database:
+    env_file:
+      - ./web/.env
+    image: 'mysql/mysql-server:8.0'
+    restart: unless-stopped
+    container_name: database
+    ports:
+      - '${FORWARD_DB_PORT:-3306}:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    volumes:
+      - 'mysql:/var/lib/mysql'
+      - './web/vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
+    networks:
+      - default
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-p${DB_PASSWORD}']
+      retries: 3
+      timeout: 5s
+  redis:
+    env_file:
+      - ./web/.env
+    image: 'redis:alpine'
+    restart: unless-stopped
+    container_name: redis
+    ports:
+      - '${FORWARD_REDIS_PORT:-6379}:6379'
+    volumes:
+      - 'redis:/data'
+    networks:
+      - default
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      retries: 3
+      timeout: 5s
+  mailpit:
+    env_file:
+      - ./web/.env
+    image: 'axllent/mailpit:latest'
+    restart: unless-stopped
+    container_name: mailpit
+    ports:
+      - '${FORWARD_MAILPIT_PORT:-1025}:1025'
+      - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
+    networks:
+      - default
+networks:
+  default:
+    driver: bridge
+volumes:
+  mysql:
+    driver: local
+  redis:
+    driver: local
