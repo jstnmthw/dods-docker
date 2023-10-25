@@ -18,9 +18,10 @@ services:
     volumes:
       - .server:/data
     ports:
-      - "27015:27015"
-      - "27020:27020"
-      - "27005:27005"
+      - "27015:27015/tcp"
+      - "27015:27015/udp"
+      - "27020:27020/udp"
+      - "27005:27005/udp"
 networks:
   default:
     driver: bridge
