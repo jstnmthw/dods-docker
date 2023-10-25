@@ -1,13 +1,12 @@
 version: '3.8'
 
 services:
-  gameserver:
+  server:
     build:
       context: Docker/dods
       dockerfile: Dockerfile
     image: dods-server
     restart: unless-stopped
-    container_name: gameserver
     networks:
       - default
     environment:
@@ -16,8 +15,7 @@ services:
       - CONFIG_GITHUB_REPO=${CONFIG_GITHUB_REPO}
       - CONFIG_GITHUB_BRANCH=${CONFIG_GITHUB_BRANCH}
     volumes:
-      - ./gameserver/.server:/data
-      - ./gameserver/cfg:/app/cfg
+      - .server:/data
     ports:
       - "27015:27015"
       - "27020:27020"
